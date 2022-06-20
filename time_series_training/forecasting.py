@@ -1,5 +1,6 @@
 import pandas as pd
 from fbprophet import Prophet
+import numpy as np
 
 data = pd.read_csv("restaurant-1-orders.csv")
 
@@ -27,6 +28,8 @@ forecast_week = m.predict(future_week)
 
 
 tail = forecast_week['yhat'].tail(7)
+
+
 vorhersage = tail.tolist()
 
 
@@ -35,7 +38,7 @@ import pyodbc
 connection_string = (
 'DRIVER=MySQL ODBC 8.0 ANSI Driver;'
 'SERVER=localhost;'
-'DATABASE=teefabrik;'
+'DATABASE=restaurant_forecasting;'
 'UID=root;'
 'PWD=;'
 'charset=utf8mb4;'
@@ -51,12 +54,31 @@ def execute(command):
 
 #inserts an product to table teebeutel
 def predict(machineID):
-    command='insert into teebeutel (datum,maschine,sorte) values (current_timestamp(),"'+machineID+'","Earl Grey");'
+    command='insert into teebeutel (restaurantID,datum,,sorte) values (current_timestamp(),"'+machineID+'","Earl Grey");'
     #print(command)
     execute(command)
 
 #inserts a temperature-event to the table temperatur
-def predict(machineID,temperature):
-    command='insert into temperatur (datum,maschine,temperatur) values (current_timestamp(),"'+machineID+'",'+str(temperature)+');'
+def predict(date, restaurantID, quantity, min_quantity, max_quantity):
+    command='insert into restaurant_prediction (restaurantId,datum,quantity,max_quantity,min_quantity) values ("'+date+'","'+restaurantID+'",'+str(quantity)+','+str(min_quantity)+','+str(max_quantity)+');'
     #print(command)
     execute(command)
+
+
+
+
+tail_df = forecast_week[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7)
+
+database_df = tail_df.reset_index(drop=True)
+
+restaurantID = np.random.randint(20000000)
+
+#Vorhersagen in Database speichern
+for i in range(0, 7):
+    date = database_df['ds'].iloc[i]
+    quantity = database_df['yhat'].iloc[i]
+    min_quantity = database_df['yhat_lower'].iloc[i]
+    max_quantity = database_df['yhat_upper'].iloc[i]
+
+
+    predict(date, restaurantID, quantity, min_quantity, max_quantity)
