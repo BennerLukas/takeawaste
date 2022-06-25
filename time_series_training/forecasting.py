@@ -2,7 +2,7 @@ import pandas as pd
 from fbprophet import Prophet
 import numpy as np
 
-data = pd.read_csv("restaurant-1-orders.csv")
+data = pd.read_csv("D:\\Github\\takeawaste\\time_series_training\\restaurant-1-orders.csv")
 
 #slect only needed columns
 data_port = data[["Order Date", "Product Price", "Quantity", "Total products"]]
