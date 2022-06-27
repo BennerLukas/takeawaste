@@ -13,7 +13,7 @@ def forecasting():
     column_sold_products = str(input('Name der Spalte mit der Anzahl der verkauften Produkte:'))
     data = pd.read_csv(name_csv)
 
-    data_ts = data[[column_date, "Item Name", "Quantity", "Total products"]]
+    data_ts = data[[column_date, column_product_name, column_sold_products]]
     data_ts = data_ts.dropna()
 
     #change to datetime
@@ -22,11 +22,11 @@ def forecasting():
 
 
 
-    data_grouped = data_ts.groupby(['Item Name'])['Total products', 'Quantity'].sum()
+    data_grouped = data_ts.groupby([column_product_name])[column_sold_products].sum()
     #data_grouped.tail(100)
 
     # get the top 10 most sold products
-    top_ten = data_grouped.sort_values(by = 'Total products', ascending=False).head(10)
+    top_ten = data_grouped.sort_values(by = column_sold_products, ascending=False).head(10)
     top_ten_list = top_ten.index.tolist()
 
 
@@ -56,10 +56,10 @@ def forecasting():
         execute(command)
 
     for item in top_ten_list:
-        is_item = data_ts['Item Name']==item
+        is_item = data_ts[column_product_name]==item
         data_item = data_ts[is_item]
-        data_item['Order Date'] = pd.to_datetime(data_item["Order Date"].dt.strftime('%Y-%m-%d'))
-        data_item_grouped = data_item.groupby(['Order Date'])['Total products'].sum()
+        data_item[column_date] = pd.to_datetime(data_item[column_date].dt.strftime('%Y-%m-%d'))
+        data_item_grouped = data_item.groupby([column_date])[column_sold_products].sum()
         date = data_item_grouped.index.tolist()
         df_data_item_grouped = data_item_grouped.to_frame()
         #print(date)
@@ -69,7 +69,7 @@ def forecasting():
 
 
 
-        df_data_item_grouped.rename(columns= {'Datum':'ds', 'Total products':'y'}, inplace = True)
+        df_data_item_grouped.rename(columns= {'Datum':'ds', column_sold_products:'y'}, inplace = True)
         list = df_data_item_grouped['y']
         df_data_item_grouped.pop('y')
         df_data_item_grouped['y'] = list
