@@ -14,7 +14,7 @@ def forecasting():
     column_sold_products = str(input('Name der Spalte mit der Anzahl der verkauften Produkte:'))
     data = pd.read_csv(name_csv)
 
-    data_ts = data[[column_date, column_product_name, column_sold_products]]
+    data_ts = data[[column_date, column_product_name, column_quantity, column_sold_products]]
     data_ts = data_ts.dropna()
 
     #change to datetime
