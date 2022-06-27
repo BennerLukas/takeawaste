@@ -10,6 +10,7 @@ def forecasting():
     name_csv = str(input('geben sie den Namen der Zieldatei an: (z.B. restaurant.csv)'))
     column_date = str(input('Name der Spalte mit dem Datum:'))
     column_product_name = str(input('Name der Spalte mit den Produktnamen:'))
+    column_quantity = str(input('Name der Spalte mit der Quantity:'))
     column_sold_products = str(input('Name der Spalte mit der Anzahl der verkauften Produkte:'))
     data = pd.read_csv(name_csv)
 
@@ -22,11 +23,11 @@ def forecasting():
 
 
 
-    data_grouped = data_ts.groupby([column_product_name])[column_sold_products].sum()
+    data_grouped = data_ts.groupby([column_product_name])[column_sold_products, column_quantity].sum()
     #data_grouped.tail(100)
 
     # get the top 10 most sold products
-    top_ten = data_grouped.sort_values(by = column_sold_products, ascending=False).head(10)
+    top_ten = data_grouped.sort_values(by = str(column_sold_products), ascending=False).head(10)
     top_ten_list = top_ten.index.tolist()
 
 
