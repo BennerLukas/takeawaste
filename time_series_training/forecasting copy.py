@@ -1,90 +1,103 @@
 import pandas as pd
 from fbprophet import Prophet
 import numpy as np
-
-
-data = pd.read_csv("restaurant-1-orders.csv")
-
-#slect only needed columns
-data_port = data[["Order Date","Item Name", "Product Price", "Quantity", "Total products"]]
-
-# drop NaN-Cases
-data_port = data_port.dropna()
-
-
-#change to datetime
-data_port["Order Date"] = pd.to_datetime(data_port["Order Date"])
-
-
-data_ts = data_port[["Order Date","Item Name", "Total products"]]
-
-#es soll eine schleife entstehen die jeweils ein Produkt aus dem Dataframe wählt und entsprechend für den Schleifendurchlauf einen DF
-#der nur Einträge zu diesem Produkt besitzt 
-
-# df (prod, date, price)
-
-data_ts.rename(columns= {'Order Date':'ds', 'Total products':'y'}, inplace = True)
-
-m = Prophet()
-m.fit(data_ts)
-
-future_week = m.make_future_dataframe(periods=7)
-
-forecast_week = m.predict(future_week)
-
-
-tail = forecast_week['yhat'].tail(7)
-
-
-vorhersage = tail.tolist()
-
-
 import pyodbc
 
-connection_string = (
-'DRIVER=MySQL ODBC 8.0 ANSI Driver;'
-'SERVER=localhost;'
-'DATABASE=restaurant_forecasting;'
-'UID=root;'
-'PWD=;'
-'charset=utf8mb4;'
-)
 
-conn=pyodbc.connect(connection_string)
 
-#executes an command like insert / create
-def execute(command):
-    cursor=conn.cursor()
-    cursor.execute(command)
-    cursor.commit()
+def forecasting():
+    restaurant_id = input('geben sie eine RestaurantID an:')
+    name_csv = str(input('geben sie den Namen der Zieldatei an: (z.B. restaurant.csv)'))
+    column_date = str(input('Name der Spalte mit dem Datum:'))
+    column_product_name = str(input('Name der Spalte mit den Produktnamen:'))
+    column_sold_products = str(input('Name der Spalte mit der Anzahl der verkauften Produkte:'))
+    data = pd.read_csv(name_csv)
 
-#inserts an product to table teebeutel
-def predict(machineID):
-    command='insert into teebeutel (restaurantID,datum,,sorte) values (current_timestamp(),"'+machineID+'","Earl Grey");'
-    #print(command)
-    execute(command)
+    data_ts = data[[column_date, "Item Name", "Quantity", "Total products"]]
+    data_ts = data_ts.dropna()
 
-#inserts a temperature-event to the table temperatur
-def predict(date, restaurantID, quantity, min_quantity, max_quantity):
-    command='insert into restaurant_prediction (restaurantId,datum,quantity,max_quantity,min_quantity) values ("'+date+'","'+restaurantID+'",'+str(quantity)+','+str(min_quantity)+','+str(max_quantity)+');'
-    #print(command)
-    execute(command)
+    #change to datetime
+    data_ts[column_date] = pd.to_datetime(data_ts[column_date])
+    data_ts[column_date] = pd.to_datetime(data_ts[column_date], format='%Y%m%d')
 
 
 
+    data_grouped = data_ts.groupby(['Item Name'])['Total products', 'Quantity'].sum()
+    #data_grouped.tail(100)
 
-tail_df = forecast_week[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7)
-
-database_df = tail_df.reset_index(drop=True)
-
-restaurantID = np.random.randint(20000000)
-
-#Vorhersagen in Database speichern
-for i in range(0, 7):
-    date = database_df['ds'].iloc[i]
-    quantity = database_df['yhat'].iloc[i]
-    min_quantity = database_df['yhat_lower'].iloc[i]
-    max_quantity = database_df['yhat_upper'].iloc[i]
+    # get the top 10 most sold products
+    top_ten = data_grouped.sort_values(by = 'Total products', ascending=False).head(10)
+    top_ten_list = top_ten.index.tolist()
 
 
-    predict(date, restaurantID, quantity, min_quantity, max_quantity)
+    # connect to Database
+    connection_string = (
+    'DRIVER=MySQL ODBC 8.0 ANSI Driver;'
+    'SERVER=localhost;'
+    'DATABASE=restaurant_products;'
+    'UID=root;'
+    'PWD=;'
+    'charset=utf8mb4;'
+    )
+
+    conn=pyodbc.connect(connection_string)
+
+    def execute(command):
+            cursor=conn.cursor()
+            cursor.execute(command)
+            cursor.commit()
+
+
+
+        #inserts the forecasting into the database
+    def predict(restaurantID, date, quantity, min_quantity, max_quantity, item):
+        command='insert into prediction (restaurantId,datum,quantity,max_quantity,min_quantity, product_name) values ("'+str(restaurantID)+'", "'+str(date)+'",'+str(quantity)+','+str(min_quantity)+','+str(max_quantity)+',"'+str(item)+'");'
+        #print(command)
+        execute(command)
+
+    for item in top_ten_list:
+        is_item = data_ts['Item Name']==item
+        data_item = data_ts[is_item]
+        data_item['Order Date'] = pd.to_datetime(data_item["Order Date"].dt.strftime('%Y-%m-%d'))
+        data_item_grouped = data_item.groupby(['Order Date'])['Total products'].sum()
+        date = data_item_grouped.index.tolist()
+        df_data_item_grouped = data_item_grouped.to_frame()
+        #print(date)
+        df_data_item_grouped['Datum'] = date
+        #data_item_grouped['Order Date'] = data_item_grouped.index
+        df_data_item_grouped.reset_index(drop=True, inplace=True)
+
+
+
+        df_data_item_grouped.rename(columns= {'Datum':'ds', 'Total products':'y'}, inplace = True)
+        list = df_data_item_grouped['y']
+        df_data_item_grouped.pop('y')
+        df_data_item_grouped['y'] = list
+
+
+        m = Prophet()
+        m.fit(df_data_item_grouped)
+
+
+        future_week = m.make_future_dataframe(periods=7)
+        future_week.tail(7) 
+
+
+        forecast_week = m.predict(future_week)
+
+        print(forecast_week[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7))
+
+        prediction_seven_days_df = forecast_week[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7)
+
+        for index, rows in prediction_seven_days_df.iterrows():
+
+            date = rows['ds']
+            quantity = rows['yhat']
+            min_quantity = rows['yhat_lower']
+            max_quantity = rows['yhat_upper']
+
+
+
+            predict(restaurant_id, date, quantity, min_quantity, max_quantity, item)
+
+forecasting()
