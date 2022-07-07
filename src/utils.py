@@ -1,5 +1,6 @@
 import logging
 
+
 def set_logger(name, mode="debug", write_log=False, full_path="./debug.log", write_mode="a"):
     """
         Make Log-File and PrettyPrints. Write mode can be either 'a' (append) or 'w' ((over)write).
