@@ -22,5 +22,11 @@
 Run the takeawaste.py file
 
 ## The Team
-
+- [Ayman Madhour](https://github.com/Madhour)
+- [Lukas Benner](https://github.com/BennerLukas)
+- [Marius Kiskemper](https://github.com/Marius2311)
+- [Marvin Vielmeyer](https://github.com/MarvV8)
+- [Oliver Wieder](https://github.com/OWDSC)
+- [Fabian Creutz](https://github.com/yellowsh29)
+- 
 ## The Idea
