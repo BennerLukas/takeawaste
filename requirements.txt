@@ -3,3 +3,4 @@ numpy
 pyodbc
 pystan
 fbprophet
+sqlalchemy

@@ -1,4 +1,8 @@
 {
-  "RestaurantID": "SeemsYummy",
-  "Filename": "restaurant-1-order.csv"
+  "restaurant_id": "SeemsYummy",
+  "name_csv": "restaurant-1-orders.csv",
+  "column_date": "Order Date",
+  "column_product_name": "Item Name",
+  "column_quantity": "Quantity",
+  "column_sold_products": "Total products"
 }

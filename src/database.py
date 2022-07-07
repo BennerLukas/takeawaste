@@ -1,9 +1,11 @@
 import pyodbc
 import sqlalchemy
-import pymysql
+
 
 class Connector:
-    def __init__(self):
+    def __init__(self, log):
+        self.log = log
+
         # connect to Database
         connection_string = (
             'DRIVER=MySQL ODBC 8.0 ANSI Driver;'
@@ -17,6 +19,7 @@ class Connector:
         alchemy_engine = sqlalchemy.create_engine(
             f'mysql+pymysql://root:1234@localhost:3306/takeawaste')
         self.alchemy_conn = alchemy_engine.connect()
+        self.log.info("Connected to database")
 
     def execute(self, command):
         cursor = self.conn.cursor()
@@ -24,5 +27,6 @@ class Connector:
         cursor.commit()
 
     def insert_df2db(self, df, table_name="Prediction"):
-        df.to_sql(table_name, self.db.alchemy_conn, if_exists="append")
+        self.log.info("Write df into database")
+        df.to_sql(table_name, self.alchemy_conn, if_exists="append")
         return True
