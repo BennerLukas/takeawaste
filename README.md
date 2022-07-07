@@ -1,8 +1,6 @@
 <div align="center">
-<h2>Takeawaste
-</h2>
 
-<img src="doc/logo.png" alt="Logo" width="210" align="center"/>
+<img src="doc/logo.png" alt="Logo" width="400" align="center"/>
 <br>
 </div>
 
