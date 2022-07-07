@@ -103,7 +103,7 @@ class TakeAWaste:
 
     def forcasting(self, top_n_list: list) -> DataFrame:
         """
-        calculate forecasting based on Facebooks Prophet.
+        calculate forecasting based on Facebooks Prophet. For the next 7 days.
         For other implementations/ tests see under the 'test' directory.
 
         :param top_n_list:
