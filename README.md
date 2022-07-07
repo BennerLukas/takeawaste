@@ -2,6 +2,10 @@
 
 <img src="doc/logo.png" alt="Logo" width="400" align="center"/>
 <br>
+<br>
+<br>
+<br>
+
 </div>
 
 [![GitHub issues](https://img.shields.io/github/issues/BennerLukas/takeawaste)](https://github.com/BennerLukas/takeawaste/issues)
