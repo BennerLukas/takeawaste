@@ -31,7 +31,7 @@ class Connector:
         cursor.execute(command)
         cursor.commit()
 
-    def insert_df2db(self, df: DataFrame, table_name: str = "Prediction") -> bool:
+    def insert_df2db(self, df: DataFrame, table_name: str = "prediction") -> bool:
         """
         Insert a whole dataframe to the database
         :param df:

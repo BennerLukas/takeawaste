@@ -26,8 +26,6 @@ class TakeAWaste:
         self.log = log
         self.db = Connector(log)
 
-        pass
-
     def set_params_by_json(self, filename: str = "metadata.json") -> bool:
         """
         Set parameter for data schema based on config file
@@ -101,7 +99,7 @@ class TakeAWaste:
 
         return top_n_list
 
-    def forcasting(self, top_n_list: list) -> DataFrame:
+    def forcasting(self, top_n_list: list) -> bool:
         """
         calculate forecasting based on Facebooks Prophet. For the next 7 days.
         For other implementations/ tests see under the 'test' directory.
@@ -141,13 +139,25 @@ class TakeAWaste:
 
             prediction_seven_days_df = forecast_week[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7)
 
-            return prediction_seven_days_df
+            prediction_seven_days_df["product_name"] = item
+            prediction_seven_days_df["restaurant_id"] = self.restaurant_id
+
+            prediction_seven_days_df = prediction_seven_days_df.rename(columns={
+                "ds": "datum",
+                "yhat": "quantity",
+                "yhat_lower": "min_quantity",
+                "yhat_upper": "max_quantity"
+            })
+
+            self.db.insert_df2db(prediction_seven_days_df)
+
+        return True
 
     def execute(self) -> bool:
         self.read_data()
         top_list = self.prep_data()
-        df_forecast = self.forcasting(top_list)
-        self.db.insert_df2db(df_forecast)
+        self.forcasting(top_list)
+
         return True
 
 

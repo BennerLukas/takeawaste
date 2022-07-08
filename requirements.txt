@@ -4,3 +4,4 @@ pyodbc
 pystan
 fbprophet
 sqlalchemy
+pymysql
