@@ -16,7 +16,7 @@
 ## Preparation for manual execution
 - Create Anaconda Environment for Python version 3.7
 - Install the requirements.txt
-- load your data in the 'data' directory and adapt the metadata.json when needed.
+- load your data in the 'data' directory and adapt the metadata.json if needed.
 
 ## Setup
 Run the takeawaste.py file
@@ -28,5 +28,5 @@ Run the takeawaste.py file
 - [Marvin Vielmeyer](https://github.com/MarvV8)
 - [Oliver Wieder](https://github.com/OWDSC)
 - [Fabian Creutz](https://github.com/yellowsh29)
-- 
+
 ## The Idea
