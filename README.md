@@ -19,6 +19,11 @@
 - load your data in the 'data' directory and adapt the metadata.json if needed.
 
 ## Setup
+Create a MySQL Database Server. Easily with docker:
+```bash 
+docker run --name takeawaste -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -d mysql:latest
+```
+
 Run the takeawaste.py file
 
 ## The Team
