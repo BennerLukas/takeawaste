@@ -108,13 +108,17 @@ class TakeAWaste:
         :return:
         """
         self.log.debug("Start Forecasting")
-        for item in top_n_list:
+        for item in top_n_list:                     # loop over every unique product
+
             is_item = self.prepped_data[self.column_product_name] == item
+
             data_item = self.prepped_data[is_item]
             data_item[self.column_date] = pd.to_datetime(data_item[self.column_date].dt.strftime('%Y-%m-%d'))
+
             data_item_grouped = data_item.groupby([self.column_date])[self.column_sold_products].sum()
             date = data_item_grouped.index.tolist()
             df_data_item_grouped = data_item_grouped.to_frame()
+
             # print(date)
             df_data_item_grouped['Datum'] = date
             # data_item_grouped['Order Date'] = data_item_grouped.index
@@ -128,7 +132,7 @@ class TakeAWaste:
             df_data_item_grouped['y'] = col_y
 
             m = Prophet()
-            m.fit(df_data_item_grouped)
+            m.fit(df_data_item_grouped)     # do the forecast
 
             future_week = m.make_future_dataframe(periods=7)
             future_week.tail(7)
