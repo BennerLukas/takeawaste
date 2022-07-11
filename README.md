@@ -35,3 +35,12 @@ Run the takeawaste.py file
 - [Fabian Creutz](https://github.com/yellowsh29)
 
 ## The Idea
+There is no denying that the world has a food waste problem.
+According to the United Nations Environment Programme, 1.3 billion tonnes of food are wasted every year, which corresponds to about one third of food produced.
+This is a problem because not only is this wasted food also a huge waste of resources, but it also takes a toll on the environment.
+Food waste is a major contributor to greenhouse gas emissions. When food waste decomposes in landfills, it emits methane, a powerful greenhouse gas.
+
+The approach taken in this paper aims to raise awareness of the food waste problem that is associated with the food service industry. The vast amount of data available to takeaway platforms on food consumption and behavior is a not thoroughly exploited goldmine for reducing waste.
+Based on takeaway data, a forecasting system is developed that estimates the requests per dish and gives a recommendation for action to the restaurant owner.
+
+For more information, read the [whitepaper](doc/master.pdf) or [presentation](doc/TakeAwaste.pdf).
