@@ -43,4 +43,4 @@ Food waste is a major contributor to greenhouse gas emissions. When food waste d
 The approach taken in this paper aims to raise awareness of the food waste problem that is associated with the food service industry. The vast amount of data available to takeaway platforms on food consumption and behavior is a not thoroughly exploited goldmine for reducing waste.
 Based on takeaway data, a forecasting system is developed that estimates the requests per dish and gives a recommendation for action to the restaurant owner.
 
-For more information, read the [whitepaper](doc/master.pdf) or [presentation](doc/TakeAwaste.pdf).
+For more information, read the [whitepaper](doc/TakeAwaste-Paper.pdf) or [presentation](doc/TakeAwaste.pdf).
