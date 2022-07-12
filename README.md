@@ -15,17 +15,17 @@
 
 
 ## Preparation for manual execution
-- Create Anaconda Environment for Python version 3.7
+- Create an Anaconda Environment for Python version 3.7
 - Install the requirements.txt
 - load your [data](https://www.kaggle.com/datasets/henslersoftware/19560-indian-takeaway-orders) in the 'data' directory and adapt the metadata.json if needed.
 
 ## Setup
-Create a MySQL Database Server. Easily with docker:
+- Create a MySQL Database Server. Easily with docker:
 ```bash 
 docker run --name takeawaste -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 -d mysql:latest
 ```
 
-Run the takeawaste.py file
+- Run the takeawaste.py file
 
 ## The Team
 - [Ayman Madhour](https://github.com/Madhour)
